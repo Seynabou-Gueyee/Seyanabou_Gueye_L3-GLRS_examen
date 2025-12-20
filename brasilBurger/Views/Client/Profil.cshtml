@@ -1,0 +1,120 @@
+@using brasilBurger.Models
+@model Client
+@{
+    ViewData["Title"] = "Mon Profil";
+    Layout = "_LayoutClient";
+}
+
+<div class="container-fluid">
+    <div class="mb-4">
+        <h2 class="text-orange mb-2">Mon Profil</h2>
+        <p class="text-muted">Gérez vos informations personnelles</p>
+    </div>
+    
+    <div class="row">
+        <!-- Informations personnelles -->
+        <div class="col-lg-7">
+            <div class="profil-section">
+                <div class="profil-section-header">
+                    <h5>Informations personnelles</h5>
+                </div>
+                <div class="profil-section-body">
+                    <form asp-action="ModifierProfil" method="post">
+                        <div class="row mb-3">
+                            <div class="col-md-6">
+                                <label class="profil-label">Nom complet</label>
+                                <div class="profil-input-group">
+                                    <i class="fas fa-user"></i>
+                                    <input type="text" name="nom" class="profil-input" 
+                                           value="@(Model.Prenom + " " + Model.Nom)" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="profil-label">Email</label>
+                                <div class="profil-input-group">
+                                    <i class="fas fa-envelope"></i>
+                                    <input type="email" name="email" class="profil-input" 
+                                           value="@Model.Email" readonly />
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="row mb-4">
+                            <div class="col-md-6">
+                                <label class="profil-label">Téléphone</label>
+                                <div class="profil-input-group">
+                                    <i class="fas fa-phone"></i>
+                                    <input type="tel" name="telephone" class="profil-input" 
+                                           value="@Model.Telephone" />
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <label class="profil-label">Adresse</label>
+                                <div class="profil-input-group">
+                                    <i class="fas fa-location-dot"></i>
+                                    <input type="text" name="adresse" class="profil-input" 
+                                           value="Dakar, Sénégal" />
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <button type="submit" class="btn-save-profil">
+                            <i class="fas fa-save"></i> Enregistrer les modifications
+                        </button>
+                    </form>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Photo de profil -->
+        <div class="col-lg-5">
+            <div class="profil-section">
+                <div class="profil-section-header">
+                    <h5>Photo de profil</h5>
+                </div>
+                <div class="profil-section-body text-center">
+                    <div class="profil-avatar-container">
+                        <div class="profil-avatar">
+                            <i class="fas fa-user"></i>
+                            <div class="profil-avatar-edit">
+                                <i class="fas fa-camera"></i>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="btn-change-photo" onclick="alert('Fonctionnalité à venir')">
+                        Changer la photo
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <!-- Statistiques -->
+    <div class="row mt-4">
+        <div class="col-12">
+            <div class="stats-section">
+                <div class="stats-section-header">
+                    <h5>Mes statistiques</h5>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card stat-commandes">
+                        <div class="stat-value">@(ViewBag.TotalCommandes ?? 12)</div>
+                        <div class="stat-label">Commandes</div>
+                    </div>
+                    <div class="stat-card stat-depenses">
+                        <div class="stat-value">@((ViewBag.TotalDepenses ?? 45000).ToString("N0"))</div>
+                        <div class="stat-label">FCFA dépensés</div>
+                    </div>
+                    <div class="stat-card stat-livraisons">
+                        <div class="stat-value">@(ViewBag.TotalLivraisons ?? 8)</div>
+                        <div class="stat-label">Livraisons</div>
+                    </div>
+                    <div class="stat-card stat-favoris">
+                        <div class="stat-value">3</div>
+                        <div class="stat-label">Favoris</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

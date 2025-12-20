@@ -1,0 +1,146 @@
+@using brasilBurger.Models
+@model IEnumerable<Commande>
+@{
+    ViewData["Title"] = "Mes Commandes";
+    Layout = "_LayoutClient";
+}
+
+<div class="container-fluid">
+    <div class="page-header">
+        <h1 class="page-title">Mes Commandes</h1>
+        <p class="page-subtitle">Suivez l'état de vos commandes</p>
+    </div>
+    
+    @if (Model.Any())
+    {
+        @foreach (var commande in Model)
+        {
+            <div class="commande-card mb-4">
+                <div class="commande-header">
+                    <div>
+                        <h4 class="commande-numero">Commande #o@commande.Id</h4>
+                        <p class="commande-date">@commande.DateCommande.ToString("dd MMMM yyyy") à @commande.DateCommande.ToString("HH:mm")</p>
+                    </div>
+                    <div>
+                        <span class="badge-status @GetBadgeStatusClass(commande.Etat)">
+                            <i class="@GetStatusIcon(commande.Etat)"></i> @GetEtatLabel(commande.Etat)
+                        </span>
+                    </div>
+                </div>
+                
+                <div class="commande-body">
+                    @foreach (var item in commande.CommandeItems)
+                    {
+                        <div class="commande-item">
+                            <div>
+                                @if (item.Burger != null)
+                                {
+                                    <span>@item.Burger.Nom x@item.Quantite</span>
+                                }
+                                else if (item.Menu != null)
+                                {
+                                    <span>@item.Menu.Nom x@item.Quantite</span>
+                                }
+                                else if (item.Complement != null)
+                                {
+                                    <span>@item.Complement.Nom x@item.Quantite</span>
+                                }
+                            </div>
+                            <div class="commande-item-price">
+                                @((item.PrixUnitaire * item.Quantite).ToString("N0")) FCFA
+                            </div>
+                        </div>
+                    }
+                </div>
+                
+                <div class="commande-footer">
+                    <div class="commande-service">
+                        @switch (commande.TypeService)
+                        {
+                            case TypeService.SurPlace:
+                                <span class="service-label">Sur Place</span>
+                                break;
+                            case TypeService.AEmporter:
+                                <span class="service-label">À Emporter</span>
+                                break;
+                            case TypeService.Livraison:
+                                <span class="service-label">Livraison</span>
+                                <span class="badge-payment">WAVE</span>
+                                break;
+                        }
+                    </div>
+                    <div class="commande-total">
+                        @commande.MontantTotal.ToString("N0") FCFA
+                    </div>
+                </div>
+            </div>
+        }
+    }
+    else
+    {
+        <div class="text-center py-5">
+            <i class="fas fa-receipt fa-5x text-muted mb-4"></i>
+            <h4 class="mb-3">Aucune commande</h4>
+            <p class="text-muted mb-4">Vous n'avez pas encore passé de commande</p>
+            <a asp-action="Catalogue" class="btn btn-orange">
+                <i class="fas fa-hamburger"></i> Découvrir le catalogue
+            </a>
+        </div>
+    }
+</div>
+
+@functions {
+    string GetBadgeStatusClass(EtatCommande etat)
+    {
+        return etat switch
+        {
+            EtatCommande.EnPreparation => "status-preparation",
+            EtatCommande.EnAttente => "status-attente",
+            EtatCommande.Annulee => "status-annulee",
+            EtatCommande.Validee => "status-validee",
+            EtatCommande.Terminee => "status-terminee",
+            _ => "status-default"
+        };
+    }
+    
+    string GetStatusIcon(EtatCommande etat)
+    {
+        return etat switch
+        {
+            EtatCommande.EnPreparation => "fas fa-clock",
+            EtatCommande.EnAttente => "fas fa-hourglass-half",
+            EtatCommande.Annulee => "fas fa-times-circle",
+            EtatCommande.Validee => "fas fa-check-circle",
+            EtatCommande.Terminee => "fas fa-check-double",
+            _ => "fas fa-info-circle"
+        };
+    }
+    
+    string GetEtatLabel(EtatCommande etat)
+    {
+        return etat switch
+        {
+            EtatCommande.EnAttente => "En attente",
+            EtatCommande.Validee => "Validée",
+            EtatCommande.EnPreparation => "En préparation",
+            EtatCommande.Terminee => "Terminée",
+            EtatCommande.Annulee => "Annulée",
+            _ => "Inconnu"
+        };
+    }
+}
+
+@section Scripts {
+    <script>
+        function annulerCommande(id) {
+            if (confirm('Êtes-vous sûr de vouloir annuler cette commande ?')) {
+                fetch('/Client/AnnulerCommande', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: id })
+                })
+                .then(() => location.reload());
+            }
+        }
+    </script>
+}

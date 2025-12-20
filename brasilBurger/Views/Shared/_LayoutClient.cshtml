@@ -1,0 +1,57 @@
+@using Microsoft.AspNetCore.Http
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"] - Brasil Burger</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body class="brasil-dark">
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-logo">
+            <div class="sidebar-logo-circle">
+                <i class="fas fa-hamburger"></i>
+            </div>
+            <h2>Brasil Burger</h2>
+            <p style="color: #999; font-size: 0.85rem; margin-top: 5px;"><i class="fas fa-sparkles"></i> Espace Client</p>
+        </div>
+
+        <ul class="sidebar-menu">
+            <li><a href="/Client/Catalogue" class="@(ViewContext.RouteData.Values["action"]?.ToString() == "Catalogue" ? "active" : "")"><i class="far fa-square"></i> Catalogue</a></li>
+            <li><a href="/Client/Panier" class="@(ViewContext.RouteData.Values["action"]?.ToString() == "Panier" ? "active" : "")"><i class="fas fa-shopping-cart"></i> Panier</a></li>
+            <li><a href="/Client/MesCommandes" class="@(ViewContext.RouteData.Values["action"]?.ToString() == "MesCommandes" ? "active" : "")"><i class="fas fa-clipboard-list"></i> Mes commandes</a></li>
+            <li><a href="/Client/Paiement" class="@(ViewContext.RouteData.Values["action"]?.ToString() == "Paiement" ? "active" : "")"><i class="far fa-credit-card"></i> Paiement</a></li>
+            <li><a href="/Client/Profil" class="@(ViewContext.RouteData.Values["action"]?.ToString() == "Profil" ? "active" : "")"><i class="far fa-user"></i> Profil</a></li>
+        </ul>
+
+        <div class="sidebar-footer">
+            <div class="user-info-card">
+                <div class="user-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+                <div class="user-details">
+                    <div class="user-role">Client</div>
+                    <div class="user-email">gseynabou924@@gmail.com</div>
+                </div>
+            </div>
+            <a href="/Account/Logout" class="btn-logout">
+                <i class="fas fa-sign-out-alt"></i> Déconnexion
+            </a>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="content-area">
+            @RenderBody()
+        </div>
+    </div>
+
+    <script src="~/js/brasil-script.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+</body>
+</html>

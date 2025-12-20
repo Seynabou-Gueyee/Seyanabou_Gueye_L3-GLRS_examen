@@ -1,0 +1,258 @@
+@using brasilBurger.ViewModels
+@using brasilBurger.Models
+@model CatalogueViewModel
+@{
+    ViewData["Title"] = "Catalogue";
+    Layout = "_LayoutClient";
+}
+
+<div class="container-fluid">
+    <!-- Message de succès/erreur -->
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success alert-dismissible fade show" role="alert">
+            <i class="fas fa-check-circle"></i> @TempData["Success"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger alert-dismissible fade show" role="alert">
+            <i class="fas fa-exclamation-circle"></i> @TempData["Error"]
+            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+        </div>
+    }
+    
+    <!-- En-tête du catalogue -->
+    <div class="page-header">
+        <h1 class="page-title">
+            <i class="fas fa-book-open"></i> NOTRE CATALOGUE
+        </h1>
+        <p class="page-subtitle">
+            Découvrez l'authenticité brésilienne à travers nos burgers emblématiques,<br>
+            préparés avec passion et des ingrédients frais
+        </p>
+    </div>
+    
+    <!-- Barre de filtres -->
+    <div class="filter-bar">
+        <button class="filter-btn active" data-filter="all">
+            <i class="fas fa-list"></i> Tout (@(Model.Burgers.Count() + Model.Menus.Count() + Model.Complements.Count()))
+        </button>
+        <button class="filter-btn" data-filter="burgers">
+            <i class="fas fa-hamburger"></i> Burgers (@Model.Burgers.Count())
+        </button>
+        <button class="filter-btn" data-filter="menus">
+            <i class="fas fa-utensils"></i> Menus (@Model.Menus.Count())
+        </button>
+        <button class="filter-btn" data-filter="extras">
+            <i class="fas fa-plus-circle"></i> Extras (@Model.Complements.Count())
+        </button>
+    </div>
+
+    <!-- DEBUG INFO -->
+    @if (!Model.Burgers.Any() && !Model.Menus.Any() && !Model.Complements.Any())
+    {
+        <div style="padding: 40px; text-align: center; background: #2a2a2a; border-radius: 10px; margin: 20px 0;">
+            <h3 style="color: #ff6b35;">⚠️ Aucune donnée trouvée</h3>
+            <p style="color: #999;">La base de données ne contient aucun produit.</p>
+            <p style="color: #999;">Burgers: @Model.Burgers.Count() | Menus: @Model.Menus.Count() | Compléments: @Model.Complements.Count()</p>
+            <a href="/TestData/Seed" style="display: inline-block; padding: 12px 24px; background: #ff6b35; color: white; text-decoration: none; border-radius: 5px; margin-top: 15px;">
+                Charger les données de test
+            </a>
+        </div>
+    }
+    
+    <!-- Section Burgers -->
+    <div class="category-section section-burgers">
+        <div class="category-header">
+            <div class="category-title">
+                <div class="category-icon orange">
+                    <i class="fas fa-hamburger"></i>
+                </div>
+                <h2 class="category-name">NOS BURGERS</h2>
+            </div>
+            <span class="category-count">@Model.Burgers.Count() burgers</span>
+        </div>
+        
+        <div class="products-grid">
+            @foreach (var burger in Model.Burgers)
+            {
+                <div class="product-card">
+                    @if (burger.Id % 2 == 0)
+                    {
+                        <span class="badge-promo">PROMO</span>
+                    }
+                    <div class="product-card-image">
+                        <img src="@(burger.ImageUrl ?? "https://via.placeholder.com/300x200?text=Burger")" 
+                             alt="@burger.Nom" />
+                    </div>
+                    
+                    <div class="product-body">
+                        <h5 class="product-title">@burger.Nom</h5>
+                        <p class="product-description">@burger.Description</p>
+                        <div class="product-card-footer">
+                            <span class="product-price">@burger.Prix.ToString("N0") FCFA</span>
+                            <button class="btn-add-cart" onclick="ajouterAuPanier(@burger.Id, 'burger')">
+                                Ajouter au panier
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    
+    <!-- Section Menus -->
+    <div class="category-section section-menus">
+        <div class="category-header">
+            <div class="category-title">
+                <div class="category-icon green">
+                    <i class="fas fa-utensils"></i>
+                </div>
+                <h2 class="category-name">NOS MENUS</h2>
+            </div>
+            <span class="category-count">@Model.Menus.Count() menus</span>
+        </div>
+        
+        <div class="products-grid">
+            @foreach (var menu in Model.Menus)
+            {
+                <div class="menu-card">
+                    @if (menu.Id % 2 == 0)
+                    {
+                        <span class="badge-promo">PROMO</span>
+                    }
+                    <div class="menu-card-image">
+                        <img src="https://via.placeholder.com/120x120?text=Coca" alt="Boisson" />
+                        <img src="https://via.placeholder.com/120x120?text=Frites" alt="Frites" />
+                        <img src="https://via.placeholder.com/120x120?text=Coca" alt="Boisson" />
+                    </div>
+                    
+                    <div class="menu-body">
+                        <h5 class="menu-title">@menu.Nom</h5>
+                        
+                        <!-- Composition du menu -->
+                        <div class="menu-items-list">
+                            <div class="menu-list-item">
+                                <div class="menu-item-info">
+                                    <div class="menu-item-icon orange">
+                                        <i class="fas fa-hamburger"></i>
+                                    </div>
+                                    <span class="menu-item-name">@menu.Burger?.Nom</span>
+                                </div>
+                                <span class="menu-item-price">+0 F</span>
+                            </div>
+                            
+                            @if (menu.MenuComplements != null)
+                            {
+                                foreach (var mc in menu.MenuComplements)
+                                {
+                                    var iconClass = mc.Complement?.Nom?.Contains("Coca") == true ? "red" : 
+                                                   mc.Complement?.Nom?.Contains("Orange") == true ? "red" : "yellow";
+                                    var icon = mc.Complement?.Nom?.Contains("Coca") == true || mc.Complement?.Nom?.Contains("Orange") == true ? "fa-wine-bottle" : "fa-cheese";
+                                    
+                                    <div class="menu-list-item">
+                                        <div class="menu-item-info">
+                                            <div class="menu-item-icon @iconClass">
+                                                <i class="fas @icon"></i>
+                                            </div>
+                                            <span class="menu-item-name">@mc.Complement?.Nom</span>
+                                        </div>
+                                        <span class="menu-item-price">+@mc.Complement?.Prix.ToString("N0") F</span>
+                                    </div>
+                                }
+                            }
+                        </div>
+                        
+                        <button class="btn-order-menu" onclick="ajouterAuPanier(@menu.Id, 'menu')">
+                            Commander ce menu
+                        </button>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+    
+    <!-- Section Extras -->
+    <div class="category-section section-extras">
+        <div class="category-header">
+            <div class="category-title">
+                <div class="category-icon orange">
+                    <i class="fas fa-plus-circle"></i>
+                </div>
+                <h2 class="category-name">EXTRAS</h2>
+            </div>
+            <span class="category-count">@Model.Complements.Count() extras</span>
+        </div>
+        
+        <div class="products-grid">
+            @foreach (var complement in Model.Complements)
+            {
+                <div class="extra-card">
+                    @if (complement.Id % 3 == 0)
+                    {
+                        <span class="badge-promo">PROMO</span>
+                    }
+                    <div class="extra-card-image">
+                        <img src="@(complement.ImageUrl ?? "https://via.placeholder.com/300x200?text=Extra")" 
+                             alt="@complement.Nom" />
+                    </div>
+                    
+                    <div class="extra-body">
+                        <h5 class="extra-title">@complement.Nom</h5>
+                        <div class="extra-card-footer">
+                            <span class="extra-price">@complement.Prix.ToString("N0") FCFA</span>
+                            <button class="btn-add" onclick="ajouterAuPanier(@complement.Id, 'complement')">
+                                <i class="fas fa-plus"></i> Ajouter
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        // Gestion des filtres
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                
+                const filter = this.dataset.filter;
+                
+                document.querySelector('.section-burgers').style.display = 
+                    filter === 'all' || filter === 'burgers' ? 'block' : 'none';
+                document.querySelector('.section-menus').style.display = 
+                    filter === 'all' || filter === 'menus' ? 'block' : 'none';
+                document.querySelector('.section-extras').style.display = 
+                    filter === 'all' || filter === 'extras' ? 'block' : 'none';
+            });
+        });
+        
+        // Ajouter au panier
+        function ajouterAuPanier(id, type) {
+            const form = document.createElement('form');
+            form.method = 'POST';
+            form.action = '/Client/AjouterAuPanier';
+            
+            const idInput = document.createElement('input');
+            idInput.type = 'hidden';
+            idInput.name = 'id';
+            idInput.value = id;
+            
+            const typeInput = document.createElement('input');
+            typeInput.type = 'hidden';
+            typeInput.name = 'type';
+            typeInput.value = type;
+            
+            form.appendChild(idInput);
+            form.appendChild(typeInput);
+            document.body.appendChild(form);
+            form.submit();
+        }
+    </script>
+}

@@ -1,0 +1,87 @@
+@{
+    ViewData["Title"] = "Créer un compte";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Inscription - Brasil Burger</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" />
+</head>
+<body class="brasil-dark full-page">
+
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-7">
+            <div class="login-box">
+                <div class="text-center mb-4">
+                    <img src="https://brasil-burger-buddy.lovable.app/assets/brasil-burger-logo-DNqGTY1E.png" 
+                         alt="Brasil Burger" class="logo mb-3" style="width: 80px; height: 80px;">
+                    <h2 class="text-orange mb-2">BRASIL BURGER</h2>
+                    <h4 class="mb-3">CRÉER UN COMPTE</h4>
+                    <p class="text-muted">Rejoignez-nous pour profiter de nos délicieux burgers</p>
+                </div>
+                
+                <form asp-action="Register" method="post">
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Prénom</label>
+                            <input type="text" name="prenom" class="form-control form-control-dark" 
+                                   placeholder="Votre prénom" required />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Nom</label>
+                            <input type="text" name="nom" class="form-control form-control-dark" 
+                                   placeholder="Votre nom" required />
+                        </div>
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Téléphone</label>
+                        <input type="tel" name="telephone" class="form-control form-control-dark" 
+                               placeholder="+221 XX XXX XX XX" required />
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Adresse email</label>
+                        <input type="email" name="email" class="form-control form-control-dark" 
+                               placeholder="votre@email.com" required />
+                    </div>
+                    
+                    <div class="mb-3">
+                        <label class="form-label">Mot de passe</label>
+                        <input type="password" name="password" class="form-control form-control-dark" 
+                               placeholder="Minimum 8 caractères" required />
+                    </div>
+                    
+                    <div class="mb-4">
+                        <label class="form-label">Confirmer le mot de passe</label>
+                        <input type="password" name="confirmPassword" class="form-control form-control-dark" 
+                               placeholder="Retapez votre mot de passe" required />
+                    </div>
+                    
+                    <button type="submit" class="btn btn-orange w-100 mb-3">
+                        Créer mon compte <i class="fas fa-user-plus ms-2"></i>
+                    </button>
+                </form>
+                
+                <p class="text-center mt-3">
+                    Vous avez déjà un compte ? 
+                    <a asp-action="Login" class="text-orange text-decoration-none fw-bold">Se connecter</a>
+                </p>
+            </div>
+            
+            <p class="text-center text-muted mt-4">© 2025 Brasil Burger. Tous droits réservés.</p>
+        </div>
+    </div>
+</div>
+
+<script src="~/lib/jquery/dist/jquery.min.js"></script>
+<script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

@@ -2,9 +2,9 @@ using System.Diagnostics;
 using Microsoft.AspNetCore.Mvc;
 using brasilBurger.Models;
 
-namespace brasilBurger.Controllers;
+namespace brasilBurger.Controllers.impl;
 
-public class HomeController : Controller
+public class HomeController : Controller, IHomeController
 {
     private readonly ILogger<HomeController> _logger;
 
@@ -15,7 +15,8 @@ public class HomeController : Controller
 
     public IActionResult Index()
     {
-        return View();
+        // Rediriger vers la page de connexion
+        return RedirectToAction("Login", "Account");
     }
 
     public IActionResult Privacy()

@@ -1,0 +1,185 @@
+@using brasilBurger.ViewModels
+@using brasilBurger.Models
+@model PanierViewModel
+
+@{
+    ViewData["Title"] = "Paiement";
+    Layout = "_LayoutClient";
+}
+
+<div class="container-fluid">
+    <div class="mb-4">
+        <h2 class="text-orange mb-2">Finalisez votre commande</h2>
+    </div>
+
+    <div class="row">
+        <!-- Modes de livraison et paiement -->
+        <div class="col-lg-7">
+            <!-- Mode de livraison -->
+            <div class="paiement-section">
+                <h5 class="section-title">
+                    <i class="fas fa-location-dot text-orange"></i> Mode de livraison
+                </h5>
+                
+                <div class="mode-option active" data-cost="0" onclick="selectDelivery(this)">
+                    <div class="mode-content">
+                        <div class="mode-radio">
+                            <input type="radio" name="delivery" value="surplace" id="surplace" checked>
+                            <label for="surplace">
+                                <i class="fas fa-store"></i> Sur place
+                            </label>
+                        </div>
+                        <span class="mode-price text-muted">Gratuit</span>
+                    </div>
+                </div>
+                
+                <div class="mode-option" data-cost="0" onclick="selectDelivery(this)">
+                    <div class="mode-content">
+                        <div class="mode-radio">
+                            <input type="radio" name="delivery" value="emporter" id="emporter">
+                            <label for="emporter">
+                                <i class="fas fa-bag-shopping"></i> À emporter
+                            </label>
+                        </div>
+                        <span class="mode-price text-muted">Gratuit</span>
+                    </div>
+                </div>
+                
+                <div class="mode-option" data-cost="1000" onclick="selectDelivery(this)">
+                    <div class="mode-content">
+                        <div class="mode-radio">
+                            <input type="radio" name="delivery" value="livraison" id="livraison">
+                            <label for="livraison">
+                                <i class="fas fa-truck"></i> Livraison
+                            </label>
+                        </div>
+                        <span class="mode-price text-danger">+1000 FCFA</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Mode de paiement -->
+            <div class="paiement-section">
+                <h5 class="section-title">
+                    <i class="fas fa-credit-card text-orange"></i> Mode de paiement
+                </h5>
+                
+                <div class="payment-option active" onclick="selectPayment(this)">
+                    <div class="payment-content">
+                        <div class="payment-radio">
+                            <input type="radio" name="payment" value="wave" id="wave" checked>
+                            <label for="wave">
+                                <div class="payment-name text-primary fw-bold">Wave</div>
+                                <div class="payment-desc">Paiement mobile rapide et sécurisé</div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="payment-option" onclick="selectPayment(this)">
+                    <div class="payment-content">
+                        <div class="payment-radio">
+                            <input type="radio" name="payment" value="orange" id="orange">
+                            <label for="orange">
+                                <div class="payment-name text-warning fw-bold">Orange Money</div>
+                                <div class="payment-desc">Paiement via Orange Money</div>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Récapitulatif -->
+        <div class="col-lg-5">
+            <div class="recap-section">
+                <h5 class="recap-title">Récapitulatif</h5>
+                
+                @if (Model.Items.Any())
+                {
+                    <div class="recap-items">
+                        @foreach (var item in Model.Items)
+                        {
+                            <div class="recap-item">
+                                <span>@item.Nom x@item.Quantite</span>
+                                <span>@((item.Prix * item.Quantite).ToString("N0")) FCFA</span>
+                            </div>
+                        }
+                    </div>
+                    
+                    <div class="recap-details">
+                        <div class="recap-line">
+                            <span>Sous-total</span>
+                            <span id="subtotal">@Model.Total FCFA</span>
+                        </div>
+                        <div class="recap-line">
+                            <span>Livraison</span>
+                            <span id="delivery-cost">0 FCFA</span>
+                        </div>
+                    </div>
+                    
+                    <div class="recap-total">
+                        <span class="total-label">Total</span>
+                        <span class="total-amount" id="total">@Model.Total FCFA</span>
+                    </div>
+                    
+                    <button type="button" class="btn-payer" onclick="confirmPayment()">
+                        Payer <span id="payment-amount">@Model.Total</span> FCFA
+                    </button>
+                }
+                else
+                {
+                    <p class="text-muted text-center">Votre panier est vide</p>
+                    <a asp-action="Catalogue" class="btn btn-orange w-100">Retour au catalogue</a>
+                }
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script>
+        let subtotal = @Model.Total;
+        let deliveryCost = 0;
+        
+        function selectDelivery(element) {
+            // Remove active class from all delivery options
+            document.querySelectorAll('.mode-option').forEach(opt => opt.classList.remove('active'));
+            element.classList.add('active');
+            
+            // Update radio button
+            const radio = element.querySelector('input[type="radio"]');
+            radio.checked = true;
+            
+            // Update delivery cost
+            deliveryCost = parseInt(element.dataset.cost);
+            updateTotal();
+        }
+        
+        function selectPayment(element) {
+            // Remove active class from all payment options
+            document.querySelectorAll('.payment-option').forEach(opt => opt.classList.remove('active'));
+            element.classList.add('active');
+            
+            // Update radio button
+            const radio = element.querySelector('input[type="radio"]');
+            radio.checked = true;
+        }
+        
+        function updateTotal() {
+            const total = subtotal + deliveryCost;
+            document.getElementById('delivery-cost').textContent = deliveryCost + ' FCFA';
+            document.getElementById('total').textContent = total + ' FCFA';
+            document.getElementById('payment-amount').textContent = total;
+        }
+        
+        function confirmPayment() {
+            const deliveryMode = document.querySelector('input[name="delivery"]:checked').value;
+            const paymentMode = document.querySelector('input[name="payment"]:checked').value;
+            const total = subtotal + deliveryCost;
+            
+            // Implement payment logic here
+            alert(`Paiement de ${total} FCFA\nLivraison: ${deliveryMode}\nMode de paiement: ${paymentMode}`);
+        }
+    </script>
+}

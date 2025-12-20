@@ -1,5 +1,5 @@
-# 1. Utilise l'image SDK .NET 8 pour compiler le projet
-FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
+# 1. Utilise l'image SDK .NET 9 pour compiler le projet
+FROM mcr.microsoft.com/dotnet/sdk:9.0 AS build
 WORKDIR /app
 
 # 2. Copie tous les fichiers de ton projet vers le serveur
@@ -11,8 +11,8 @@ RUN dotnet restore
 # 4. Compile et publie l'application dans un dossier nommé 'out'
 RUN dotnet publish -c Release -o out
 
-# 5. Utilise l'image ASP.NET 8 pour exécuter l'application
-FROM mcr.microsoft.com/dotnet/aspnet:8.0
+# 5. Utilise l'image ASP.NET 9 pour exécuter l'application
+FROM mcr.microsoft.com/dotnet/aspnet:9.0
 WORKDIR /app
 
 # 6. Récupère le projet compilé depuis l'étape de 'build'
@@ -23,4 +23,4 @@ EXPOSE 10000
 ENV ASPNETCORE_URLS=http://+:10000
 
 # 8. Lance l'application (Vérifie bien que le nom .dll est correct)
-ENTRYPOINT ["dotnet", "Seyanabou_Gueye_L3-GLRS_examen.dll"]
+ENTRYPOINT ["dotnet", "brasilBurger.dll"]

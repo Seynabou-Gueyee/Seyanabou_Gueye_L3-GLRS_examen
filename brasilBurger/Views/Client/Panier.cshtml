@@ -1,0 +1,127 @@
+@using brasilBurger.ViewModels
+@using brasilBurger.Models
+@model PanierViewModel
+@{
+    ViewData["Title"] = "Mon Panier";
+    Layout = "_LayoutClient";
+}
+
+@if (Model.Items.Any())
+{
+    <div class="container-fluid">
+        <h2 class="text-orange mb-4">
+            <i class="fas fa-shopping-cart"></i> MON PANIER
+        </h2>
+        
+        <div class="row">
+            <div class="col-md-8">
+                <!-- Liste des articles -->
+                @foreach (var item in Model.Items)
+                {
+                    <div class="card-dark mb-3">
+                        <div class="card-body">
+                            <div class="row align-items-center">
+                                <div class="col-md-2">
+                                    <img src="@item.ImageUrl" alt="@item.Nom" class="img-fluid rounded" />
+                                </div>
+                                <div class="col-md-4">
+                                    <h5 class="text-orange">@item.Nom</h5>
+                                    <p class="text-muted small mb-0">@item.Type</p>
+                                </div>
+                                <div class="col-md-2">
+                                    <div class="input-group">
+                                        <button class="btn btn-outline-orange" onclick="updateQuantity(@item.Id, -1)">-</button>
+                                        <input type="text" class="form-control text-center" value="@item.Quantite" readonly />
+                                        <button class="btn btn-outline-orange" onclick="updateQuantity(@item.Id, 1)">+</button>
+                                    </div>
+                                </div>
+                                <div class="col-md-2 text-end">
+                                    <p class="product-price mb-0">@item.SousTotal.ToString("N0") FCFA</p>
+                                </div>
+                                <div class="col-md-2 text-end">
+                                    <button class="btn btn-danger" onclick="supprimerDuPanier(@item.Id)">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+            
+            <div class="col-md-4">
+                <!-- Résumé -->
+                <div class="card-dark">
+                    <div class="card-body">
+                        <h4 class="text-orange mb-4">RÉSUMÉ</h4>
+                        
+                        <div class="d-flex justify-content-between mb-2">
+                            <span>Sous-total</span>
+                            <span>@Model.SousTotal.ToString("N0") FCFA</span>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between mb-3 pb-3 border-bottom">
+                            <span>Frais de livraison</span>
+                            <span>@Model.FraisLivraison.ToString("N0") FCFA</span>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between mb-4">
+                            <strong>TOTAL</strong>
+                            <strong class="text-orange h4">@Model.Total.ToString("N0") FCFA</strong>
+                        </div>
+                        
+                        <a asp-action="Paiement" class="btn btn-orange w-100 mb-2">
+                            <i class="fas fa-credit-card"></i> Procéder au paiement
+                        </a>
+                        
+                        <a asp-action="Commander" class="btn btn-outline-orange w-100 mb-2">
+                            <i class="fas fa-check"></i> Passer la commande
+                        </a>
+                        
+                        <a asp-action="Catalogue" class="btn btn-outline-secondary w-100">
+                            <i class="fas fa-arrow-left"></i> Continuer les achats
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+else
+{
+    <!-- Panier vide -->
+    <div class="container text-center py-5">
+        <div class="my-5">
+            <i class="fas fa-shopping-bag fa-5x text-muted mb-4"></i>
+            <h3 class="mb-3">VOTRE PANIER EST VIDE</h3>
+            <p class="text-muted mb-4">Découvrez nos délicieux burgers et menus</p>
+            <a asp-action="Catalogue" class="btn btn-orange">
+                Voir le catalogue
+            </a>
+        </div>
+    </div>
+}
+
+@section Scripts {
+    <script>
+        function updateQuantity(id, change) {
+            fetch('/Client/UpdateQuantity', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ id: id, change: change })
+            })
+            .then(() => location.reload());
+        }
+        
+        function supprimerDuPanier(id) {
+            if (confirm('Êtes-vous sûr de vouloir supprimer cet article ?')) {
+                fetch('/Client/SupprimerDuPanier', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ id: id })
+                })
+                .then(() => location.reload());
+            }
+        }
+    </script>
+}

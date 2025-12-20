@@ -1,0 +1,216 @@
+@using brasilBurger.ViewModels
+@using brasilBurger.Models
+@model CommanderViewModel
+@{
+    ViewData["Title"] = "Paiement";
+    Layout = "_LayoutClient";
+}
+
+<div class="container-fluid">
+    <h2 class="text-orange mb-2">Paiement</h2>
+    <p class="text-muted mb-4">Finalisez votre commande</p>
+    
+    <form asp-action="ValiderCommande" method="post">
+        <div class="row">
+            <!-- Section gauche -->
+            <div class="col-lg-7">
+                <!-- Mode de livraison -->
+                <div class="paiement-section mb-4">
+                    <h5 class="section-title">
+                        <i class="fas fa-location-dot text-orange"></i> Mode de livraison
+                    </h5>
+                    
+                    <div class="mode-option" data-mode="surplace" data-cost="0">
+                        <div class="mode-content">
+                            <div class="mode-radio">
+                                <input type="radio" name="typeService" value="0" id="surplace" checked>
+                                <label for="surplace">
+                                    <i class="fas fa-store"></i> Sur place
+                                </label>
+                            </div>
+                            <span class="mode-price text-muted">Gratuit</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mode-option" data-mode="emporter" data-cost="0">
+                        <div class="mode-content">
+                            <div class="mode-radio">
+                                <input type="radio" name="typeService" value="1" id="emporter">
+                                <label for="emporter">
+                                    <i class="fas fa-bag-shopping"></i> À emporter
+                                </label>
+                            </div>
+                            <span class="mode-price text-muted">Gratuit</span>
+                        </div>
+                    </div>
+                    
+                    <div class="mode-option" data-mode="livraison" data-cost="1000">
+                        <div class="mode-content">
+                            <div class="mode-radio">
+                                <input type="radio" name="typeService" value="2" id="livraison">
+                                <label for="livraison">
+                                    <i class="fas fa-truck"></i> Livraison
+                                </label>
+                            </div>
+                            <span class="mode-price text-danger">+1000 FCFA</span>
+                        </div>
+                    </div>
+                    
+                    <div id="zoneSelection" style="display: none;" class="mt-3">
+                        <label class="form-label text-white">Zone de livraison</label>
+                        <select name="zoneId" id="zoneId" class="form-control form-control-dark">
+                            <option value="">Sélectionner une zone</option>
+                            @if (Model.Zones != null)
+                            {
+                                @foreach (var zone in Model.Zones)
+                                {
+                                    <option value="@zone.Id" data-prix="@zone.PrixLivraison">@zone.Nom</option>
+                                }
+                            }
+                        </select>
+                    </div>
+                </div>
+                
+                <!-- Mode de paiement -->
+                <div class="paiement-section">
+                    <h5 class="section-title">
+                        <i class="fas fa-credit-card text-orange"></i> Mode de paiement
+                    </h5>
+                    
+                    <div class="payment-option" data-payment="wave">
+                        <div class="payment-content">
+                            <div class="payment-radio">
+                                <input type="radio" name="modePaiement" value="0" id="wave" checked>
+                                <label for="wave">
+                                    <div class="payment-name text-primary fw-bold">Wave</div>
+                                    <div class="payment-desc">Paiement mobile rapide et sécurisé</div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="payment-option" data-payment="orange">
+                        <div class="payment-content">
+                            <div class="payment-radio">
+                                <input type="radio" name="modePaiement" value="1" id="orange">
+                                <label for="orange">
+                                    <div class="payment-name text-warning fw-bold">Orange Money</div>
+                                    <div class="payment-desc">Paiement via Orange Money</div>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Section droite - Récapitulatif -->
+            <div class="col-lg-5">
+                <div class="recap-section">
+                    <h5 class="recap-title">Récapitulatif</h5>
+                    
+                    <div class="recap-items">
+                        @if (ViewBag.Panier != null)
+                        {
+                            @foreach (var item in ViewBag.Panier)
+                            {
+                                <div class="recap-item">
+                                    <span>@item.Nom x@item.Quantite</span>
+                                    <span>@((item.Prix * item.Quantite).ToString("N0")) FCFA</span>
+                                </div>
+                            }
+                        }
+                    </div>
+                    
+                    <div class="recap-details">
+                        <div class="recap-line">
+                            <span>Sous-total</span>
+                            <span id="sousTotal">@(ViewBag.MontantArticles?.ToString("N0") ?? "0") FCFA</span>
+                        </div>
+                        <div class="recap-line">
+                            <span>Livraison</span>
+                            <span id="fraisLivraison">0 FCFA</span>
+                        </div>
+                    </div>
+                    
+                    <div class="recap-total">
+                        <span class="total-label">Total</span>
+                        <span class="total-amount" id="totalFinal">@(ViewBag.MontantArticles?.ToString("N0") ?? "0") FCFA</span>
+                    </div>
+                    
+                    <button type="submit" class="btn-payer">
+                        Payer <span id="montantPaiement">@(ViewBag.MontantArticles?.ToString("N0") ?? "0")</span> FCFA
+                    </button>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+@section Scripts {
+    <script>
+        let montantArticles = @(ViewBag.MontantArticles ?? 0);
+        let fraisLivraison = 0;
+        
+        // Gestion des options de livraison
+        document.querySelectorAll('.mode-option').forEach(option => {
+            option.addEventListener('click', function() {
+                // Activer le radio button
+                const radio = this.querySelector('input[type="radio"]');
+                radio.checked = true;
+                
+                // Retirer l'état actif des autres options
+                document.querySelectorAll('.mode-option').forEach(opt => {
+                    opt.classList.remove('active');
+                });
+                this.classList.add('active');
+                
+                // Gérer l'affichage de la sélection de zone
+                const mode = this.dataset.mode;
+                const zoneSelection = document.getElementById('zoneSelection');
+                
+                if (mode === 'livraison') {
+                    zoneSelection.style.display = 'block';
+                    const zonePrix = document.querySelector('#zoneId option:checked')?.dataset.prix || 0;
+                    fraisLivraison = parseInt(zonePrix) || parseInt(this.dataset.cost);
+                } else {
+                    zoneSelection.style.display = 'none';
+                    fraisLivraison = 0;
+                }
+                
+                updateTotal();
+            });
+        });
+        
+        // Gestion du changement de zone
+        document.getElementById('zoneId')?.addEventListener('change', function() {
+            const selectedOption = this.options[this.selectedIndex];
+            fraisLivraison = parseInt(selectedOption.dataset.prix) || 0;
+            updateTotal();
+        });
+        
+        // Gestion des options de paiement
+        document.querySelectorAll('.payment-option').forEach(option => {
+            option.addEventListener('click', function() {
+                const radio = this.querySelector('input[type="radio"]');
+                radio.checked = true;
+                
+                document.querySelectorAll('.payment-option').forEach(opt => {
+                    opt.classList.remove('active');
+                });
+                this.classList.add('active');
+            });
+        });
+        
+        function updateTotal() {
+            const total = montantArticles + fraisLivraison;
+            
+            document.getElementById('fraisLivraison').textContent = fraisLivraison.toLocaleString('fr-FR') + ' FCFA';
+            document.getElementById('totalFinal').textContent = total.toLocaleString('fr-FR') + ' FCFA';
+            document.getElementById('montantPaiement').textContent = total.toLocaleString('fr-FR');
+        }
+        
+        // Initialiser l'état actif de la première option
+        document.querySelector('.mode-option[data-mode="surplace"]').classList.add('active');
+        document.querySelector('.payment-option[data-payment="wave"]').classList.add('active');
+    </script>
+}

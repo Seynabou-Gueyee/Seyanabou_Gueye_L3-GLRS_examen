@@ -1,8 +1,68 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@{
+    ViewData["Title"] = "Accueil";
+    Layout = "_Layout";
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
+<div class="full-page">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-6 text-center text-lg-start mb-5 mb-lg-0">
+                <img src="https://brasil-burger-buddy.lovable.app/assets/brasil-burger-logo-DNqGTY1E.png" 
+                     alt="Brasil Burger Logo" 
+                     class="mb-4" style="width: 120px; height: 120px;">
+                
+                <h1 class="display-3 fw-bold text-white mb-3">BRASIL BURGER</h1>
+                <p class="lead text-orange mb-4">🔥 L'authenticité brésilienne dans chaque bouchée 🔥</p>
+                
+                <p class="text-white-50 mb-5">
+                    Découvrez nos burgers artisanaux inspirés des saveurs du Brésil. 
+                    Des ingrédients frais, des recettes uniques et un service de qualité.
+                </p>
+                
+                <div class="d-grid gap-3 d-sm-flex justify-content-sm-center justify-content-lg-start">
+                    <a href="/Account/Login" class="btn btn-orange btn-lg px-5 py-3">
+                        <i class="fas fa-sign-in-alt me-2"></i> Se connecter
+                    </a>
+                    <a href="/Account/Register" class="btn btn-outline-light btn-lg px-5 py-3">
+                        <i class="fas fa-user-plus me-2"></i> S'inscrire
+                    </a>
+                </div>
+            </div>
+            
+            <div class="col-lg-6">
+                <div class="text-center">
+                    <img src="https://images.unsplash.com/photo-1568901346375-23c9450c58cd?w=600&h=600&fit=crop" 
+                         alt="Burger Brasil" 
+                         class="img-fluid rounded-4 shadow-lg">
+                </div>
+            </div>
+        </div>
+        
+        <!-- Features Section -->
+        <div class="row mt-5 pt-5">
+            <div class="col-md-4 text-center mb-4">
+                <div class="card-dark p-4">
+                    <i class="fas fa-hamburger fa-3x text-orange mb-3"></i>
+                    <h4 class="text-white fw-bold mb-2">Burgers Artisanaux</h4>
+                    <p class="text-white-50">Préparés avec des ingrédients frais et de qualité supérieure</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 text-center mb-4">
+                <div class="card-dark p-4">
+                    <i class="fas fa-truck fa-3x text-orange mb-3"></i>
+                    <h4 class="text-white fw-bold mb-2">Livraison Rapide</h4>
+                    <p class="text-white-50">Vos burgers livrés chauds et frais en moins de 30 minutes</p>
+                </div>
+            </div>
+            
+            <div class="col-md-4 text-center mb-4">
+                <div class="card-dark p-4">
+                    <i class="fas fa-star fa-3x text-orange mb-3"></i>
+                    <h4 class="text-white fw-bold mb-2">Saveurs Authentiques</h4>
+                    <p class="text-white-50">Des recettes inspirées de la cuisine brésilienne traditionnelle</p>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
