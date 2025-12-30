@@ -7,5 +7,139 @@
 # To list all registered routes, run the following command:
 #   bin/console debug:router
 
-controllers:
-    resource: routing.controllers
+# yaml-language-server: $schema=../vendor/symfony/routing/Loader/schema/routing.schema.json
+
+# Page d'accueil - Redirige vers le login
+home:
+    path: /
+    controller: Symfony\Bundle\FrameworkBundle\Controller\RedirectController
+    defaults:
+        route: app_login
+        permanent: false
+
+# Routes de sécurité
+app_login:
+    path: /login
+    controller: App\Controller\SecurityController::login
+
+app_register:
+    path: /register
+    controller: App\Controller\SecurityController::register
+
+app_logout:
+    path: /logout
+    methods: GET
+
+# Dashboard
+app_dashboard:
+    path: /gestionnaire/dashboard
+    controller: App\Controller\Impl\DashboardController::index
+
+# Burgers
+app_burger_index:
+    path: /gestionnaire/burger
+    controller: App\Controller\Impl\BurgerController::index
+
+app_burger_new:
+    path: /gestionnaire/burger/new
+    controller: App\Controller\Impl\BurgerController::new
+
+app_burger_edit:
+    path: /gestionnaire/burger/{id}/edit
+    controller: App\Controller\Impl\BurgerController::edit
+
+app_burger_archive:
+    path: /gestionnaire/burger/{id}/archive
+    controller: App\Controller\Impl\BurgerController::archive
+
+# Menus
+app_menu_index:
+    path: /gestionnaire/menu
+    controller: App\Controller\Impl\MenuController::index
+
+app_menu_new:
+    path: /gestionnaire/menu/new
+    controller: App\Controller\Impl\MenuController::new
+
+app_menu_edit:
+    path: /gestionnaire/menu/{id}/edit
+    controller: App\Controller\Impl\MenuController::edit
+
+app_menu_archive:
+    path: /gestionnaire/menu/{id}/archive
+    controller: App\Controller\Impl\MenuController::archive
+
+# Compléments
+app_complement_index:
+    path: /gestionnaire/complement
+    controller: App\Controller\Impl\ComplementController::index
+
+app_complement_new:
+    path: /gestionnaire/complement/new
+    controller: App\Controller\Impl\ComplementController::new
+
+app_complement_edit:
+    path: /gestionnaire/complement/{id}/edit
+    controller: App\Controller\Impl\ComplementController::edit
+
+app_complement_archive:
+    path: /gestionnaire/complement/{id}/archive
+    controller: App\Controller\Impl\ComplementController::archive
+
+# Commandes
+app_commande_index:
+    path: /gestionnaire/commande
+    controller: App\Controller\Impl\CommandeController::index
+
+app_commande_annuler:
+    path: /gestionnaire/commande/{id}/annuler
+    controller: App\Controller\Impl\CommandeController::annuler
+
+app_commande_terminer:
+    path: /gestionnaire/commande/{id}/terminer
+    controller: App\Controller\Impl\CommandeController::terminer
+
+app_commande_affecter_livreur:
+    path: /gestionnaire/commande/{id}/affecter-livreur
+    controller: App\Controller\Impl\CommandeController::affecterLivreur
+
+app_commande_par_zone:
+    path: /gestionnaire/commande/zone/{zoneId}/commandes-livraison
+    controller: App\Controller\Impl\CommandeController::commandesParZone
+
+# Zones
+app_zone_index:
+    path: /gestionnaire/zone
+    controller: App\Controller\Impl\ZoneController::index
+
+app_zone_new:
+    path: /gestionnaire/zone/new
+    controller: App\Controller\Impl\ZoneController::new
+
+app_zone_edit:
+    path: /gestionnaire/zone/{id}/edit
+    controller: App\Controller\Impl\ZoneController::edit
+
+app_zone_commandes:
+    path: /gestionnaire/zone/{id}/commandes
+    controller: App\Controller\Impl\ZoneController::commandes
+
+# Livreurs
+app_livreur_index:
+    path: /gestionnaire/livreur
+    controller: App\Controller\Impl\UserController::index
+
+app_livreur_toggle_disponibilite:
+    path: /gestionnaire/livreur/{id}/toggle-disponibilite
+    controller: App\Controller\Impl\UserController::toggleDisponibilite
+    methods: [POST]
+
+# Affectations
+app_affectation_index:
+    path: /gestionnaire/affectation
+    controller: App\Controller\Impl\AffectationController::index
+
+# Statistiques
+app_statistiques:
+    path: /gestionnaire/statistiques
+    controller: App\Controller\Impl\StatistiquesController::index

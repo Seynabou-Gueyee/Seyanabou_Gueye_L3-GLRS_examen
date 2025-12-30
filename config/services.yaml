@@ -19,5 +19,43 @@ services:
     App\:
         resource: '../src/'
 
+    # Enregistrement des interfaces de repositories
+    App\Repository\BurgerRepositoryInterface:
+        class: App\Repository\Impl\BurgerRepository
+        
+    App\Repository\MenuRepositoryInterface:
+        class: App\Repository\Impl\MenuRepository
+        
+    App\Repository\ComplementRepositoryInterface:
+        class: App\Repository\Impl\ComplementRepository
+        
+    App\Repository\CommandeRepositoryInterface:
+        class: App\Repository\Impl\CommandeRepository
+        
+    App\Repository\UserRepositoryInterface:
+        class: App\Repository\Impl\UserRepository
+        
+    App\Repository\ZoneRepositoryInterface:
+        class: App\Repository\Impl\ZoneRepository
+
+    # Enregistrement des interfaces de services
+    App\Service\BurgerServiceInterface:
+        class: App\Service\Impl\BurgerService
+        
+    App\Service\MenuServiceInterface:
+        class: App\Service\Impl\MenuService
+        
+    App\Service\ComplementServiceInterface:
+        class: App\Service\Impl\ComplementService
+        
+    App\Service\CommandeServiceInterface:
+        class: App\Service\Impl\CommandeService
+
+    App\Service\ZoneServiceInterface:
+        class: App\Service\Impl\ZoneService
+        
+    App\Service\Interface\UserServiceInterface:
+        class: App\Service\Impl\UserService
+
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
