@@ -1,0 +1,68 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des Livreurs{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <h1><i class="fas fa-users"></i> Gestion des Livreurs</h1>
+</div>
+
+<div style="display: grid; grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); gap: 20px;">
+    {% if livreurs is empty %}
+        <div class="card" style="grid-column: 1/-1; text-align: center; padding: 60px;">
+            <i class="fas fa-inbox" style="font-size: 64px; margin-bottom: 20px; display: block; color: #666;"></i>
+            <h3 style="color: #666; margin: 0;">Aucun livreur disponible</h3>
+        </div>
+    {% else %}
+        {% for livreur in livreurs %}
+        <div class="card">
+            <div class="card-body" style="text-align: center; padding: 30px 20px;">
+                <!-- Photo du livreur -->
+                <div style="width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg, #00ff88, #00cc6a); margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; font-size: 40px; color: #0a0a0a; font-weight: bold; position: relative;">
+                    {% if livreur.photo %}
+                        <img src="{{ asset('uploads/' ~ livreur.photo) }}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+                    {% else %}
+                        {{ livreur.prenom|slice(0, 1) }}{{ livreur.nom|slice(0, 1) }}
+                    {% endif %}
+                    
+                    <!-- Badge disponibilité -->
+                    <div style="position: absolute; bottom: 0; right: 0; width: 25px; height: 25px; border-radius: 50%; background: {{ livreur.disponible ? '#00ff88' : '#ff4444' }}; border: 3px solid #1a1a1a;"></div>
+                </div>
+                
+                <!-- Informations -->
+                <h3 style="margin: 0 0 5px 0; color: #00ff88; font-size: 20px;">
+                    {{ livreur.prenom }} {{ livreur.nom }}
+                </h3>
+                
+                <div style="display: flex; align-items: center; justify-content: center; gap: 5px; margin-bottom: 15px; color: #aaa;">
+                    <i class="fas fa-phone"></i>
+                    <span>{{ livreur.telephone }}</span>
+                </div>
+                
+                <!-- Statut -->
+                {% if livreur.disponible %}
+                    <span class="badge badge-success" style="font-size: 14px; padding: 8px 16px; margin-bottom: 15px;">
+                        <i class="fas fa-check-circle"></i> Disponible
+                    </span>
+                {% else %}
+                    <span class="badge badge-danger" style="font-size: 14px; padding: 8px 16px; margin-bottom: 15px;">
+                        <i class="fas fa-times-circle"></i> Indisponible
+                    </span>
+                {% endif %}
+                
+                <!-- Actions -->
+                <div style="margin-top: 20px;">
+                    <a href="{{ path('app_livreur_toggle', {id: livreur.id}) }}" 
+                       class="btn btn-sm {{ livreur.disponible ? 'btn-secondary' : 'btn-success' }}" 
+                       style="width: 100%;"
+                       onclick="return confirm('Changer le statut de disponibilité ?')">
+                        <i class="fas fa-sync-alt"></i> 
+                        {{ livreur.disponible ? 'Marquer Indisponible' : 'Marquer Disponible' }}
+                    </a>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    {% endif %}
+</div>
+{% endblock %}
