@@ -1,0 +1,69 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des Compléments{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <h1><i class="fas fa-pizza-slice"></i> Gestion des Compléments</h1>
+    <a href="{{ path('app_complement_new') }}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Ajouter un Complément
+    </a>
+</div>
+
+<div class="card">
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>Image</th>
+                    <th>Nom</th>
+                    <th>Prix</th>
+                    <th>État</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if complements is empty %}
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 40px; color: #666;">
+                        <i class="fas fa-inbox" style="font-size: 48px; margin-bottom: 10px; display: block;"></i>
+                        Aucun complément disponible
+                    </td>
+                </tr>
+                {% else %}
+                    {% for complement in complements %}
+                    <tr>
+                        <td>
+                            {% if complement.image %}
+                                <img src="{{ asset('uploads/' ~ complement.image) }}" width="60" height="60" style="border-radius: 8px; object-fit: cover;">
+                            {% else %}
+                                <div style="width: 60px; height: 60px; background: #2a2a2a; border-radius: 8px; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-pizza-slice" style="color: #666;"></i>
+                                </div>
+                            {% endif %}
+                        </td>
+                        <td><strong>{{ complement.nom }}</strong></td>
+                        <td><span style="color: #ff9500; font-weight: 600;">{{ complement.prix }} FCFA</span></td>
+                        <td>
+                            {% if complement.archive %}
+                                <span class="badge badge-danger">Archivé</span>
+                            {% else %}
+                                <span class="badge badge-success">Actif</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ path('app_complement_edit', {id: complement.id}) }}" class="btn btn-sm btn-warning" title="Modifier">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="{{ path('app_complement_archive', {id: complement.id}) }}" class="btn btn-sm btn-secondary" title="{{ complement.archive ? 'Désarchiver' : 'Archiver' }}">
+                                <i class="fas fa-{{ complement.archive ? 'undo' : 'archive' }}"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
