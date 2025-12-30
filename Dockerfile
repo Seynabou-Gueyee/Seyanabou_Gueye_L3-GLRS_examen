@@ -1,4 +1,5 @@
-FROM php:8.2-apache
+# Change 8.2 en 8.4 ici
+FROM php:8.4-apache
 
 # Installation des extensions nécessaires
 RUN apt-get update && apt-get install -y \
@@ -21,7 +22,8 @@ ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
-RUN composer install --no-dev --optimize-autoloader --no-scripts
+# On ajoute --ignore-platform-reqs par sécurité pour les versions PHP
+RUN composer install --no-dev --optimize-autoloader --no-scripts --ignore-platform-reqs
 
 # Créer les dossiers nécessaires avec les bonnes permissions
 RUN mkdir -p var/cache var/log public/uploads && \
