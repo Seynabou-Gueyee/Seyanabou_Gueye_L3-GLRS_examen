@@ -1,0 +1,146 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des Commandes{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <h1><i class="fas fa-shopping-cart"></i> Gestion des Commandes</h1>
+</div>
+
+<div class="card" style="margin-bottom: 20px;">
+    <div class="card-body">
+        <h5 style="margin-bottom: 20px; color: #00ff88;"><i class="fas fa-filter"></i> Filtrer les commandes</h5>
+        <form method="get">
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 15px; margin-bottom: 15px;">
+                <div>
+                    <select name="burger" class="form-control">
+                        <option value="">-- Burger --</option>
+                        {% for burger in burgers %}
+                        <option value="{{ burger.id }}">{{ burger.nom }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <select name="menu" class="form-control">
+                        <option value="">-- Menu --</option>
+                        {% for menu in menus %}
+                        <option value="{{ menu.id }}">{{ menu.nom }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <input type="date" name="date" class="form-control" placeholder="Date">
+                </div>
+                <div>
+                    <select name="etat" class="form-control">
+                        <option value="">-- État --</option>
+                        <option value="En cours">En cours</option>
+                        <option value="Validée">Validée</option>
+                        <option value="Terminée">Terminée</option>
+                        <option value="Annulée">Annulée</option>
+                    </select>
+                </div>
+                <div>
+                    <select name="client" class="form-control">
+                        <option value="">-- Client --</option>
+                        {% for client in clients %}
+                        <option value="{{ client.id }}">{{ client.prenom }} {{ client.nom }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+                <div>
+                    <button type="submit" class="btn btn-primary" style="width: 100%;">
+                        <i class="fas fa-search"></i> Filtrer
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card">
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>N°</th>
+                    <th>Client</th>
+                    <th>Date</th>
+                    <th>Type</th>
+                    <th>Montant</th>
+                    <th>État</th>
+                    <th>Livreur</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if commandes is empty %}
+                <tr>
+                    <td colspan="8" style="text-align: center; padding: 40px; color: #666;">
+                        <i class="fas fa-inbox" style="font-size: 48px; margin-bottom: 10px; display: block;"></i>
+                        Aucune commande disponible
+                    </td>
+                </tr>
+                {% else %}
+                    {% for commande in commandes %}
+                    <tr>
+                        <td><strong>#{{ commande.id }}</strong></td>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <i class="fas fa-user-circle" style="font-size: 24px; color: #00ff88;"></i>
+                                <div>
+                                    <strong>{{ commande.client.prenom }} {{ commande.client.nom }}</strong><br>
+                                    <small style="color: #666;">{{ commande.client.telephone }}</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td>{{ commande.dateCommande|date('d/m/Y H:i') }}</td>
+                        <td>
+                            {% if commande.typeCommande == 'Livraison' %}
+                                <span class="badge" style="background: #ff9500;"><i class="fas fa-truck"></i> Livraison</span>
+                            {% else %}
+                                <span class="badge" style="background: #00ff88; color: #0a0a0a;"><i class="fas fa-shopping-bag"></i> Sur place</span>
+                            {% endif %}
+                        </td>
+                        <td><span style="color: #ff9500; font-weight: 600;">{{ commande.montantTotal }} FCFA</span></td>
+                        <td>
+                            {% if commande.etat == 'En cours' %}
+                                <span class="badge badge-info">En cours</span>
+                            {% elseif commande.etat == 'Validée' %}
+                                <span class="badge badge-success">Validée</span>
+                            {% elseif commande.etat == 'Terminée' %}
+                                <span class="badge" style="background: #00ff88; color: #0a0a0a;">Terminée</span>
+                            {% else %}
+                                <span class="badge badge-danger">Annulée</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if commande.livreur %}
+                                <small><i class="fas fa-motorcycle"></i> {{ commande.livreur.prenom }}</small>
+                            {% else %}
+                                <small style="color: #666;">-</small>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if commande.etat != 'Annulée' and commande.etat != 'Terminée' %}
+                                <a href="{{ path('app_commande_terminer', {id: commande.id}) }}" class="btn btn-sm btn-success" title="Terminer">
+                                    <i class="fas fa-check"></i>
+                                </a>
+                                <a href="{{ path('app_commande_annuler', {id: commande.id}) }}" class="btn btn-sm btn-danger" title="Annuler">
+                                    <i class="fas fa-times"></i>
+                                </a>
+                                {% if commande.typeCommande == 'Livraison' and commande.livreur is null %}
+                                    <a href="{{ path('app_commande_affecter_livreur', {id: commande.id}) }}" class="btn btn-sm btn-primary" title="Affecter Livreur">
+                                        <i class="fas fa-user-plus"></i>
+                                    </a>
+                                {% endif %}
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

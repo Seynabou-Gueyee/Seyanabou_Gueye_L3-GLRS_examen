@@ -1,0 +1,71 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Commandes Livraison - {{ zone.nom }}{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <h1><i class="fas fa-truck"></i> Livraisons en attente - {{ zone.nom }}</h1>
+    <a href="{{ path('app_zone_index') }}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Retour
+    </a>
+</div>
+
+<div class="card">
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>N°</th>
+                    <th>Client</th>
+                    <th>Téléphone</th>
+                    <th>Montant</th>
+                    <th>État</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if commandes is empty %}
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 40px; color: #666;">
+                        <i class="fas fa-check-circle" style="font-size: 48px; margin-bottom: 10px; display: block; color: #00ff88;"></i>
+                        Aucune commande en attente pour cette zone
+                    </td>
+                </tr>
+                {% else %}
+                    {% for commande in commandes %}
+                    <tr>
+                        <td><strong>#{{ commande.id }}</strong></td>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <i class="fas fa-user-circle" style="font-size: 24px; color: #00ff88;"></i>
+                                <strong>{{ commande.client.prenom }} {{ commande.client.nom }}</strong>
+                            </div>
+                        </td>
+                        <td>
+                            <a href="tel:{{ commande.client.telephone }}" style="color: #ff9500; text-decoration: none;">
+                                <i class="fas fa-phone"></i> {{ commande.client.telephone }}
+                            </a>
+                        </td>
+                        <td><span style="color: #ff9500; font-weight: 600;">{{ commande.montantTotal }} FCFA</span></td>
+                        <td>
+                            {% if commande.etat == 'En cours' %}
+                                <span class="badge badge-info">En cours</span>
+                            {% elseif commande.etat == 'Validée' %}
+                                <span class="badge badge-success">Validée</span>
+                            {% else %}
+                                <span class="badge" style="background: #666;">{{ commande.etat }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            <a href="{{ path('app_commande_affecter_livreur', {id: commande.id}) }}" class="btn btn-sm btn-primary" title="Affecter un livreur">
+                                <i class="fas fa-user-plus"></i> Affecter
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

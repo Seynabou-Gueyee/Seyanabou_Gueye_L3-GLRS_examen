@@ -1,0 +1,56 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Affecter un Livreur{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <h1><i class="fas fa-user-plus"></i> Affecter un Livreur - Commande #{{ commande.id }}</h1>
+    <a href="{{ path('app_commande_index') }}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Retour
+    </a>
+</div>
+
+<div class="card" style="max-width: 800px; margin-bottom: 20px;">
+    <div class="card-body">
+        <h5 style="color: #00ff88; margin-bottom: 20px;"><i class="fas fa-info-circle"></i> Détails de la commande</h5>
+        <div style="display: grid; gap: 15px;">
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-user" style="color: #ff9500;"></i>
+                <div>
+                    <strong>Client:</strong> {{ commande.client.prenom }} {{ commande.client.nom }}<br>
+                    <small style="color: #aaa;">{{ commande.client.telephone }}</small>
+                </div>
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-map-pin" style="color: #ff9500;"></i>
+                <strong>Zone:</strong> {{ commande.zone ? commande.zone.nom : 'Non définie' }}
+            </div>
+            <div style="display: flex; align-items: center; gap: 10px;">
+                <i class="fas fa-money-bill" style="color: #ff9500;"></i>
+                <strong>Montant:</strong> <span style="color: #00ff88; font-weight: 600;">{{ commande.montantTotal }} FCFA</span>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="card" style="max-width: 800px;">
+    <div class="card-body">
+        <h5 style="color: #00ff88; margin-bottom: 20px;"><i class="fas fa-motorcycle"></i> Sélectionner un livreur</h5>
+        {{ form_start(form) }}
+            <div class="form-group">
+                {{ form_label(form.livreur) }}
+                {{ form_widget(form.livreur) }}
+                {{ form_errors(form.livreur) }}
+            </div>
+            <div style="margin-top: 30px; display: flex; gap: 10px;">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-check"></i> Affecter
+                </button>
+                <a href="{{ path('app_commande_index') }}" class="btn btn-secondary">
+                    <i class="fas fa-times"></i> Annuler
+                </a>
+            </div>
+        {{ form_end(form) }}
+    </div>
+</div>
+{% endblock %}
