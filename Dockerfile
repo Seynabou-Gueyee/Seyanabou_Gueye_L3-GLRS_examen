@@ -17,20 +17,26 @@ COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html
 
-# On copie d'abord les fichiers
+# On copie les fichiers
 COPY . .
+
+# --- FIX CRUCIAL POUR L'ERREUR DEBUGBUNDLE ---
+# On définit l'environnement de production DIRECTEMENT dans le build
+ENV APP_ENV=prod
+# ---------------------------------------------
 
 # Configuration Apache pour pointer vers le dossier /public
 ENV APACHE_DOCUMENT_ROOT /var/www/html/public
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/sites-available/*.conf
 RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.conf /etc/apache2/conf-available/*.conf
 
-# CRUCIAL : On prépare les dossiers AVANT le composer install
+# On prépare les dossiers et les permissions
 RUN mkdir -p var/cache var/log public/uploads && \
     chown -R www-data:www-data /var/www/html && \
     chmod -R 775 var/ public/uploads
 
-# Installation des dépendances (SANS --no-scripts pour que Symfony s'auto-configure)
+# Installation des dépendances
+# Grâce à ENV APP_ENV=prod au-dessus, les scripts Symfony ne chercheront plus le DebugBundle
 RUN composer install --no-dev --optimize-autoloader --ignore-platform-reqs
 
 EXPOSE 80
