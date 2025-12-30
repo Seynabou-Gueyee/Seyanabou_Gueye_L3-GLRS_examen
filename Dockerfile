@@ -23,6 +23,9 @@ RUN sed -ri -e 's!/var/www/html!${APACHE_DOCUMENT_ROOT}!g' /etc/apache2/apache2.
 
 RUN composer install --no-dev --optimize-autoloader --no-scripts
 
-RUN chown -R www-data:www-data var/
+# Créer les dossiers nécessaires avec les bonnes permissions
+RUN mkdir -p var/cache var/log public/uploads && \
+    chown -R www-data:www-data var/ public/uploads && \
+    chmod -R 775 var/ public/uploads
 
 EXPOSE 80
