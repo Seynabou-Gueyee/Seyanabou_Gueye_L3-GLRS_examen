@@ -1,0 +1,117 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Affectations Livreurs{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <h1><i class="fas fa-truck"></i> Affectations des Livreurs</h1>
+</div>
+
+<div style="display: grid; grid-template-columns: 1fr 400px; gap: 20px;">
+    <!-- Commandes à affecter -->
+    <div class="card">
+        <div class="card-body">
+            <h3 style="color: #00ff88; margin-bottom: 20px;"><i class="fas fa-shopping-cart"></i> Commandes à affecter</h3>
+            
+            {% if commandes is empty %}
+                <div style="text-align: center; padding: 60px 20px; color: #666;">
+                    <i class="fas fa-check-circle" style="font-size: 64px; margin-bottom: 20px; display: block; color: #00ff88;"></i>
+                    <h4 style="margin: 0; color: #aaa;">Toutes les commandes sont affectées</h4>
+                </div>
+            {% else %}
+                <div style="display: flex; flex-direction: column; gap: 15px;">
+                    {% for commande in commandes %}
+                    <div style="background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 8px; padding: 20px; display: flex; justify-content: space-between; align-items: center;">
+                        <div style="flex: 1;">
+                            <div style="display: flex; align-items: center; gap: 10px; margin-bottom: 10px;">
+                                <strong style="color: #00ff88; font-size: 16px;">Commande #{{ commande.id }}</strong>
+                                {% if commande.etat == 'En cours' %}
+                                    <span class="badge badge-info">En cours</span>
+                                {% else %}
+                                    <span class="badge badge-success">Validée</span>
+                                {% endif %}
+                            </div>
+                            
+                            <div style="display: flex; gap: 20px; color: #aaa; font-size: 14px;">
+                                <div>
+                                    <i class="fas fa-user"></i> 
+                                    <strong style="color: #fff;">{{ commande.client.prenom }} {{ commande.client.nom }}</strong>
+                                </div>
+                                <div>
+                                    <i class="fas fa-phone"></i> 
+                                    {{ commande.client.telephone }}
+                                </div>
+                            </div>
+                            
+                            <div style="margin-top: 10px; display: flex; gap: 20px; color: #aaa; font-size: 14px;">
+                                <div>
+                                    <i class="fas fa-map-marker-alt" style="color: #ff9500;"></i> 
+                                    <strong>{{ commande.zone ? commande.zone.nom : 'Zone non définie' }}</strong>
+                                </div>
+                                <div>
+                                    <i class="fas fa-money-bill" style="color: #00ff88;"></i> 
+                                    <strong style="color: #00ff88;">{{ commande.montantTotal }} FCFA</strong>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div>
+                            <a href="{{ path('app_commande_affecter_livreur', {id: commande.id}) }}" class="btn btn-primary">
+                                <i class="fas fa-user-plus"></i> Affecter
+                            </a>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+    
+    <!-- Livreurs disponibles -->
+    <div class="card">
+        <div class="card-body">
+            <h3 style="color: #00ff88; margin-bottom: 20px;"><i class="fas fa-motorcycle"></i> Livreurs disponibles</h3>
+            
+            {% if livreurs is empty %}
+                <div style="text-align: center; padding: 40px 20px; color: #666;">
+                    <i class="fas fa-user-slash" style="font-size: 48px; margin-bottom: 15px; display: block;"></i>
+                    <p style="margin: 0; color: #aaa;">Aucun livreur disponible</p>
+                </div>
+            {% else %}
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    {% for livreur in livreurs %}
+                    <div style="background: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 8px; padding: 15px; display: flex; align-items: center; gap: 15px;">
+                        <!-- Photo -->
+                        <div style="width: 50px; height: 50px; border-radius: 50%; background: linear-gradient(135deg, #00ff88, #00cc6a); display: flex; align-items: center; justify-content: center; font-size: 18px; color: #0a0a0a; font-weight: bold; flex-shrink: 0; position: relative;">
+                            {% if livreur.photo %}
+                                <img src="{{ asset('uploads/' ~ livreur.photo) }}" style="width: 100%; height: 100%; border-radius: 50%; object-fit: cover;">
+                            {% else %}
+                                {{ livreur.prenom|slice(0, 1) }}{{ livreur.nom|slice(0, 1) }}
+                            {% endif %}
+                            
+                            <!-- Badge vert disponible -->
+                            <div style="position: absolute; bottom: -2px; right: -2px; width: 18px; height: 18px; border-radius: 50%; background: #00ff88; border: 3px solid #1a1a1a;"></div>
+                        </div>
+                        
+                        <!-- Info -->
+                        <div style="flex: 1;">
+                            <div style="font-weight: 600; color: #fff; margin-bottom: 3px;">
+                                {{ livreur.prenom }} {{ livreur.nom }}
+                            </div>
+                            <div style="font-size: 13px; color: #aaa;">
+                                <i class="fas fa-phone" style="font-size: 11px;"></i> {{ livreur.telephone }}
+                            </div>
+                        </div>
+                        
+                        <!-- Badge -->
+                        <span class="badge badge-success" style="font-size: 11px;">
+                            <i class="fas fa-check"></i>
+                        </span>
+                    </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
