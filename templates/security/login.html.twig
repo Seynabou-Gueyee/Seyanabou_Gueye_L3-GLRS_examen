@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion - BRASIL BURGER</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            min-height: 100vh; display: flex; align-items: center; justify-content: center; color: #fff;
+        }
+        .login-container { width: 100%; max-width: 450px; padding: 20px; }
+        .logo-section { text-align: center; margin-bottom: 40px; }
+        .logo { width: 80px; height: 80px; margin: 0 auto 20px; border-radius: 50%; background: conic-gradient(from 0deg, #ff9500, #00ff88, #ff9500); padding: 3px; display: flex; align-items: center; justify-content: center; }
+        .logo-inner { width: 100%; height: 100%; background-color: #0a0a0a; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .logo-inner img { width: 50px; height: 50px; }
+        .brand-name { font-size: 32px; font-weight: 700; color: #fff; letter-spacing: 2px; margin-bottom: 10px; }
+        .tagline { color: #ff9500; font-size: 13px; }
+        .login-card { background-color: #1a1a1a; border: 1px solid #2a2a2a; border-radius: 16px; padding: 40px; box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5); }
+        .login-title { text-align: center; font-size: 20px; font-weight: 600; margin-bottom: 10px; color: #fff; text-transform: uppercase; }
+        .login-subtitle { text-align: center; color: #888; font-size: 13px; margin-bottom: 25px; }
+        .profile-select { text-align: center; margin-bottom: 25px; }
+        .profile-label { font-size: 12px; color: #888; margin-bottom: 15px; display: block; }
+        .profile-options { display: flex; justify-content: center; gap: 15px; }
+        .profile-option { flex: 1; padding: 15px; background-color: #0f0f0f; border: 2px solid #2a2a2a; border-radius: 12px; cursor: pointer; transition: all 0.3s; text-align: center; }
+        .profile-option:hover { border-color: #ff9500; }
+        .profile-option.active { border-color: #ff9500; background-color: rgba(255, 149, 0, 0.1); }
+        .profile-option i { font-size: 24px; color: #ff9500; margin-bottom: 8px; display: block; }
+        .profile-option span { font-size: 12px; color: #fff; font-weight: 500; }
+        .form-group { margin-bottom: 20px; }
+        .form-group label { display: block; margin-bottom: 8px; color: #888; font-size: 13px; font-weight: 500; }
+        .form-control { width: 100%; padding: 14px 16px; background-color: #0f0f0f; border: 1px solid #2a2a2a; border-radius: 10px; color: #fff; font-size: 14px; transition: all 0.3s; }
+        .form-control:focus { outline: none; border-color: #ff9500; }
+        .form-control::placeholder { color: #555; }
+        .btn-login { width: 100%; padding: 14px; background-color: #ff9500; color: #000; border: none; border-radius: 10px; font-size: 15px; font-weight: 600; cursor: pointer; transition: all 0.3s; margin-top: 10px; display: flex; align-items: center; justify-content: center; gap: 10px; }
+        .btn-login:hover { background-color: #ff8800; transform: translateY(-2px); box-shadow: 0 5px 20px rgba(255, 149, 0, 0.3); }
+        .divider { text-align: center; margin: 25px 0; color: #555; font-size: 12px; }
+        .signup-link { text-align: center; font-size: 13px; color: #888; }
+        .signup-link a { color: #ff9500; text-decoration: none; font-weight: 600; }
+        .signup-link a:hover { text-decoration: underline; }
+        .footer { text-align: center; margin-top: 30px; font-size: 11px; color: #555; }
+        .alert { padding: 12px 16px; background-color: rgba(255, 68, 68, 0.1); border: 1px solid #ff4444; border-radius: 8px; color: #ff4444; margin-bottom: 20px; font-size: 13px; }
+    </style>
+</head>
+<body>
+    <div class="login-container">
+        <div class="logo-section">
+            <div class="logo">
+                <div class="logo-inner">
+                    <img src="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext x='50' y='70' text-anchor='middle' font-size='60' fill='%23ff9500' font-weight='bold'%3EB%3C/text%3E%3C/svg%3E" alt="Logo">
+                </div>
+            </div>
+            <h1 class="brand-name">BRASIL BURGER</h1>
+            <p class="tagline">✨ L'authenticité brésilienne dans chaque bouchée ✨</p>
+        </div>
+        <div class="login-card">
+            <h2 class="login-title">Connexion</h2>
+            <p class="login-subtitle">Accédez à votre espace personnel</p>
+            <div class="profile-select">
+                <label class="profile-label">Choisissez votre profil</label>
+                <div class="profile-options">
+                    <div class="profile-option"><i class="fas fa-user"></i><span>Client</span></div>
+                    <div class="profile-option active"><i class="fas fa-briefcase"></i><span>Gestionnaire</span></div>
+                    <div class="profile-option"><i class="fas fa-motorcycle"></i><span>Livreur</span></div>
+                </div>
+            </div>
+            {% if error %}<div class="alert">{{ error.messageKey|trans(error.messageData, 'security') }}</div>{% endif %}
+            <form method="post">
+                <div class="form-group">
+                    <label for="inputEmail">Adresse email</label>
+                    <input type="email" value="{{ last_username }}" name="_username" id="inputEmail" class="form-control" placeholder="votre@email.com" autocomplete="email" required autofocus>
+                </div>
+                <div class="form-group">
+                    <label for="inputPassword">Mot de passe</label>
+                    <input type="password" name="_password" id="inputPassword" class="form-control" placeholder="••••••••" autocomplete="current-password" required>
+                </div>
+                <input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+                <button class="btn-login" type="submit"><span>Se connecter</span><i class="fas fa-arrow-right"></i></button>
+            </form>
+            <div class="divider">ou</div>
+            <div class="signup-link">Nouveau chez Brasil Burger ? <a href="{{ path('app_register') }}">Créer un compte</a></div>
+        </div>
+        <div class="footer">© 2024 Brasil Burger. Tous droits réservés.</div>
+    </div>
+</body>
+</html>
