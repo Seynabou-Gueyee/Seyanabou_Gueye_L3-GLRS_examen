@@ -1504,6 +1504,7 @@ namespace Symfony\Component\DependencyInjection\Loader\Configurator;
  *         framework?: FrameworkConfig,
  *         doctrine?: DoctrineConfig,
  *         doctrine_migrations?: DoctrineMigrationsConfig,
+ *         debug?: DebugConfig,
  *         twig?: TwigConfig,
  *         web_profiler?: WebProfilerConfig,
  *         stimulus?: StimulusConfig,
