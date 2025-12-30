@@ -1,0 +1,77 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Commandes de la Zone {{ zone.nom }}{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <h1><i class="fas fa-list"></i> Commandes - {{ zone.nom }}</h1>
+    <a href="{{ path('app_zone_index') }}" class="btn btn-secondary">
+        <i class="fas fa-arrow-left"></i> Retour
+    </a>
+</div>
+
+<div class="card">
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>N°</th>
+                    <th>Client</th>
+                    <th>Date</th>
+                    <th>Montant</th>
+                    <th>État</th>
+                    <th>Livreur</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if commandes is empty %}
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 40px; color: #666;">
+                        <i class="fas fa-inbox" style="font-size: 48px; margin-bottom: 10px; display: block;"></i>
+                        Aucune commande pour cette zone
+                    </td>
+                </tr>
+                {% else %}
+                    {% for commande in commandes %}
+                    <tr>
+                        <td><strong>#{{ commande.id }}</strong></td>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <i class="fas fa-user-circle" style="font-size: 24px; color: #00ff88;"></i>
+                                <div>
+                                    <strong>{{ commande.client.prenom }} {{ commande.client.nom }}</strong><br>
+                                    <small style="color: #666;">{{ commande.client.telephone }}</small>
+                                </div>
+                            </div>
+                        </td>
+                        <td>{{ commande.dateCommande|date('d/m/Y H:i') }}</td>
+                        <td><span style="color: #ff9500; font-weight: 600;">{{ commande.montantTotal }} FCFA</span></td>
+                        <td>
+                            {% if commande.etat == 'En cours' %}
+                                <span class="badge badge-info">En cours</span>
+                            {% elseif commande.etat == 'Validée' %}
+                                <span class="badge badge-success">Validée</span>
+                            {% elseif commande.etat == 'Terminée' %}
+                                <span class="badge" style="background: #00ff88; color: #0a0a0a;">Terminée</span>
+                            {% else %}
+                                <span class="badge badge-danger">{{ commande.etat }}</span>
+                            {% endif %}
+                        </td>
+                        <td>
+                            {% if commande.livreur %}
+                                <div style="display: flex; align-items: center; gap: 5px;">
+                                    <i class="fas fa-motorcycle" style="color: #ff9500;"></i>
+                                    <span>{{ commande.livreur.prenom }} {{ commande.livreur.nom }}</span>
+                                </div>
+                            {% else %}
+                                <span style="color: #666;">Non affecté</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

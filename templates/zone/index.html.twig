@@ -1,0 +1,63 @@
+{% extends 'base.html.twig' %}
+
+{% block title %}Gestion des Zones{% endblock %}
+
+{% block body %}
+<div class="page-header">
+    <h1><i class="fas fa-map-marked-alt"></i> Gestion des Zones de Livraison</h1>
+    <a href="{{ path('app_zone_new') }}" class="btn btn-primary">
+        <i class="fas fa-plus"></i> Ajouter une Zone
+    </a>
+</div>
+
+<div class="card">
+    <div class="table-responsive">
+        <table>
+            <thead>
+                <tr>
+                    <th>Nom</th>
+                    <th>Prix Livraison</th>
+                    <th>Quartiers</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if zones is empty %}
+                <tr>
+                    <td colspan="4" style="text-align: center; padding: 40px; color: #666;">
+                        <i class="fas fa-inbox" style="font-size: 48px; margin-bottom: 10px; display: block;"></i>
+                        Aucune zone disponible
+                    </td>
+                </tr>
+                {% else %}
+                    {% for zone in zones %}
+                    <tr>
+                        <td>
+                            <div style="display: flex; align-items: center; gap: 10px;">
+                                <i class="fas fa-map-pin" style="font-size: 20px; color: #00ff88;"></i>
+                                <strong>{{ zone.nom }}</strong>
+                            </div>
+                        </td>
+                        <td><span style="color: #ff9500; font-weight: 600;">{{ zone.prixLivraison }} FCFA</span></td>
+                        <td>
+                            <small style="color: #aaa;">{{ zone.quartiers }}</small>
+                        </td>
+                        <td>
+                            <a href="{{ path('app_zone_edit', {id: zone.id}) }}" class="btn btn-sm btn-warning" title="Modifier">
+                                <i class="fas fa-edit"></i>
+                            </a>
+                            <a href="{{ path('app_zone_commandes', {id: zone.id}) }}" class="btn btn-sm" style="background: #00ff88; color: #0a0a0a;" title="Voir Commandes">
+                                <i class="fas fa-eye"></i>
+                            </a>
+                            <a href="{{ path('app_commande_par_zone', {zoneId: zone.id}) }}" class="btn btn-sm btn-primary" title="Livraisons en Attente">
+                                <i class="fas fa-truck"></i>
+                            </a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
