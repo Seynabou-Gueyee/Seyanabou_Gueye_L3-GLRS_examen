@@ -1,0 +1,27 @@
+# Cache et logs Symfony
+/var/cache/*
+/var/log/*
+
+# Dépendances (sera installé dans le container)
+/vendor/
+
+# Variables d'environnement locales
+.env.local
+.env.*.local
+
+# Node modules si vous en avez
+/node_modules/
+
+# Fichiers Git
+.git/
+.gitignore
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# Tests
+/phpunit.xml.local
+/.phpunit.result.cache
